@@ -20,7 +20,7 @@
 ### 프로젝트 구조
 
 src/ <br/>
-├── view.ts # 기본 View 추상 클래스
+├── view.ts # 기본 View 추상 클래스 <br/>
 ├── template.ts # HTML 템플릿 처리 <br/>
 ├── helper.ts # 유틸리티 함수 <br/>
 ├── users.ts # 사용자 관리 뷰 <br/>
