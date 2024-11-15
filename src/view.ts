@@ -1,5 +1,8 @@
+import { each, filter, pipe, take } from '@fxts/core';
 import { html } from './template';
-
+interface EnhancedEvent extends Event {
+  currentTarget: Element;
+}
 export abstract class View<T> {
   private _element: HTMLElement | null = null;
 
@@ -24,4 +27,35 @@ export abstract class View<T> {
   }
 
   onRender() {}
+
+  delegate(
+    eventType: string,
+    selector: string,
+    listener: (e: EnhancedEvent) => void
+  ): void {
+    this.element()!.addEventListener(eventType, (e: Event) => {
+      pipe(
+        this.element().querySelectorAll(selector),
+        filter((currentTarget: Element) =>
+          (currentTarget as HTMLElement).contains(e.target as Node)
+        ),
+        take(1),
+        each((currentTarget: Element) => {
+          listener(
+            Object.assign(Object.fromEntries(entries(e)), {
+              currentTarget,
+            }) as EnhancedEvent
+          );
+        })
+      );
+    });
+  }
+}
+
+function* entries(
+  object: Record<string, any>
+): IterableIterator<[string, any]> {
+  for (const key in object) {
+    yield [key, object[key]];
+  }
 }
